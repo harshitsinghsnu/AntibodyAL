@@ -7,8 +7,29 @@ Active Learning framework for Antibody Binding Affinity Prediction
 [![GPyTorch 1.15](https://img.shields.io/badge/GPyTorch-1.15-green.svg)](https://gpytorch.ai/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-GP active-learning benchmark across eight AbBiBench antibody-antigen assays.  
-**Key result**: Tanimoto-kernel GP + UCB achieves **57.8% mean Recall@2%** (68.3% against the acquisition-eligible pool) under a unified 10% label budget vs. 10.0% for random selection ($p=0.0078$, paired Wilcoxon), using label-blind seed initialization and a fixed held-out evaluation split (see `antibody_al/core.py`, `stratified_seed_blind`). `scripts/06_run_ucb_beta_ablation.py` and `scripts/07_run_fixed_budget.py` reproduce the UCB $\beta$-schedule and fixed-absolute-budget analyses reported in the paper's rebuttal.
+Antibody engineering campaigns must prioritise variants from large combinatorial libraries
+under limited assay budgets. We present a Gaussian process (GP) active-learning benchmark
+for antibody-antigen binding affinity prediction across eight public AbBiBench assays
+spanning influenza hemagglutinin antibodies CR6261 and CR9114 and AAYL-series scFv
+libraries against the SARS-CoV-2 Spike HR2 peptide. The framework embeds variable heavy
+and light (VH/VL) sequences with ESM-2 650M, trains GP surrogates over compressed
+protein-language-model representations, and evaluates kernel, acquisition, representation,
+classical featurisation, and labelling-budget choices under a unified 10% experimental budget.
+Across the benchmark, a Tanimoto-kernel GP with UCB acquisition is the strongest default,
+achieving 67.3% mean Recall@2% across three random seeds, compared with 8.9% for
+random selection. The same configuration recovers near-ceiling fractions of top binders
+in the influenza libraries (89.5% on 3gbn h1, 95.5% on 3gbn h9, and 100% on 4fqi h3)
+while exposing harder AAYL combinatorial landscapes where recall remains lower and
+more variable. ESM-2 650M is the strongest representation (0.673 ± 0.28), outperforming
+ProtBert, AntiBERTy, AbLang2, ProGen2, and classical encodings. On BindingGYM,
+the same configuration matches or exceeds ALLM-Ab on three datasets using the 100-
+sample held-out test metric. Structure-mapped Integrated Gradients and KernelSHAP
+analyses recover CDR-region attribution patterns consistent with contact-derived paratope
+geometry across deposited antibody-antigen complexes. These results support Tanimoto-
+kernel GP active learning as a simple, reproducible strategy for label-efficient antibody
+affinity optimisation with qualitative structural validation.
+
+![AntibodyAL architecture](AL_architecture.png)
 
 ---
 
@@ -125,51 +146,6 @@ python scripts/run_bindinggym_al.py
 python scripts/run_epistasis_analysis.py
 ```
 
-Expected output:
-
-```
-3gbn_h1     lin_R2=0.903  r_nn=0.976  recall@2%=0.895
-3gbn_h9     lin_R2=0.868  r_nn=0.975  recall@2%=0.955
-4fqi_h3     lin_R2=0.586  r_nn=0.582  recall@2%=1.000
-aayl49      lin_R2=0.255  r_nn=0.384  recall@2%=0.410
-...
-Spearman(lin_R2, Recall@2%) = 0.905
-```
-
----
-
-## Key results
-
-| Configuration | Mean Recall@2% |
-|---|---|
-| Tanimoto + UCB (ours) | **67.3%** |
-| Tanimoto + EI | 65.0% |
-| RQ + UCB | 65.0% |
-| Random baseline | 8.9% |
-
-| Dataset | Recall@2% | Spearman ρ |
-|---|---|---|
-| 3gbn_h1 | 89.5% ± 0.7% | 0.892 ± 0.007 |
-| 3gbn_h9 | 95.5% ± 6.0% | 0.864 ± 0.060 |
-| 4fqi_h3 | 100.0% | 0.539 ± 0.000 |
-| aayl49 | 41.0% ± 1.8% | 0.432 ± 0.023 |
-| aayl51 | 37.6% ± 4.0% | 0.393 ± 0.036 |
-| aayl49_ml | 30.4% ± 3.1% | 0.337 ± 0.007 |
-| aayl50 | 62.6% ± 4.2% | 0.407 ± 0.003 |
-| aayl52 | 81.7% ± 2.0% | 0.501 ± 0.007 |
-
-PLM ablation (Tanimoto + UCB, mean across 8 datasets):
-
-| PLM | Mean Recall@2% |
-|---|---|
-| ESM-2 650M | **0.673 ± 0.28** |
-| ProtBert | 0.627 ± 0.31 |
-| AntiBERTy (paired) | 0.615 ± 0.28 |
-| AbLang2 | 0.604 ± 0.31 |
-| AntiBERTy (concat) | 0.579 ± 0.32 |
-| ProGen2 | 0.507 ± 0.31 |
-
----
 
 ## Software and hardware
 
@@ -186,17 +162,6 @@ See `requirements.txt` for the complete pinned dependency list used in the paper
 
 ---
 
-## Citation
-
-```bibtex
-@inproceedings{singh2026acml,
-  title     = {Active Learning framework for Antibody Binding Affinity Prediction},
-  author    = {Singh, Harshit and Malhotra, Aastha and Srivastava, Satya Pratik
-               and Singh, Rajeev Kumar and Gorantla, Rohan},
-  booktitle = {Proceedings of Machine Learning Research},
-  year      = {2026},
-}
-```
 
 ## License
 
