@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+.env
+
+# Data (large files — download separately; see data/README.md)
+data/embeddings/
+data/embeddings_*/
+data/structures/*.pdb
+data/raw/
+
+# Results (can be reproduced by running scripts)
+results/
+results_*/
+figures/*.pdf
+figures/*.png
+*.npy
+*.pt
+*.pkl
+
+# Logs and checkpoints
+*.log
+*.ckpt
+
+# Notebook checkpoints
+.ipynb_checkpoints/
+
+# IDEs
+.vscode/
+.idea/
+*.sublime-project
+
+# OS
+.DS_Store
+Thumbs.db

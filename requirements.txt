@@ -1,0 +1,63 @@
+# =============================================================================
+# Exact package versions used in all paper experiments
+# Hardware: NVIDIA RTX A4000 (16 GB) | CUDA 12.8 | Python 3.10
+#
+# Recommended install:
+#   conda env create -f environment.yml
+#   conda activate al
+#
+# Or pip only (GPU build):
+#   pip install torch==2.11.0+cu128 --index-url https://download.pytorch.org/whl/cu128
+#   pip install -r requirements.txt
+# =============================================================================
+
+# ── Gaussian Process / Core ML ────────────────────────────────────────────────
+torch==2.11.0+cu128           # GPU build (CUDA 12.8); paper experiments
+gpytorch==1.15.2              # exact GP, Tanimoto/Matern/RBF/RQ kernels
+linear_operator==0.6.1        # gpytorch backend
+
+# ── Scientific computing ──────────────────────────────────────────────────────
+numpy==2.4.4
+scipy==1.17.1
+scikit-learn==1.8.0
+pandas==3.0.2
+
+# ── Protein Language Models ───────────────────────────────────────────────────
+fair-esm==2.0.0               # ESM-2 650M — primary embedding (paper main results)
+transformers==5.5.0           # backbone for ProtBert, AntiBERTy, AbLang2
+tokenizers==0.22.2
+huggingface_hub==1.9.0
+safetensors==0.7.0
+antiberty==0.1.3              # AntiBERTy (PLM ablation)
+ablang2==0.2.1                # AbLang2 (PLM ablation)
+sentencepiece==0.2.1
+
+# ── ProGen2 (PLM ablation) ───────────────────────────────────────────────────
+# Not on PyPI. Install from HuggingFace:
+#   pip install git+https://github.com/salesforce/progen
+# or load the checkpoint directly:
+#   hugohrban/progen2-small (used in paper via transformers AutoModelForCausalLM)
+
+# ── Explainability ────────────────────────────────────────────────────────────
+shap==0.52.0                  # KernelSHAP
+captum==0.9.0                 # Integrated Gradients (captum.attr.IntegratedGradients)
+einops==0.8.2
+
+# ── Structure / Biology ───────────────────────────────────────────────────────
+biopython==1.87               # PDB parsing, sequence alignment, contact extraction
+
+# ── Visualisation ─────────────────────────────────────────────────────────────
+matplotlib==3.10.9
+seaborn==0.13.2
+py3Dmol                       # 3D structure viewer in notebooks
+
+# ── Utilities ─────────────────────────────────────────────────────────────────
+PyYAML==6.0.3
+tqdm==4.67.3
+h5py==3.16.0
+joblib==1.5.3
+requests==2.33.1
+
+# ── PyMOL (structure figure rendering — paper Figure 6) ──────────────────────
+# Install via conda: conda install -c conda-forge pymol-open-source==3.1.0
+# Not available via pip.

@@ -1,0 +1,98 @@
+# Dataset configurations — unified 10% pool-relative budget (paper benchmark).
+#
+# Budget rule:  seed = batch = floor(0.01 * N),  C = 9 cycles
+# Total labels: seed + 9 * batch = 10 * floor(0.01*N) ≈ 10% of N
+#
+# This keeps experimental cost proportional to pool size and prevents
+# large libraries from dominating the evaluation.
+
+datasets:
+  3gbn_h1:
+    n_variants: 1887
+    top2_k: 38           # floor(0.02 * 1887)
+    seed_size: 19        # floor(0.01 * 1887)
+    batch_size: 19
+    n_cycles: 9
+    total_labels: 190    # ~10.1% of pool
+
+  3gbn_h9:
+    n_variants: 1842
+    top2_k: 37
+    seed_size: 18        # floor(0.01 * 1842)
+    batch_size: 18
+    n_cycles: 9
+    total_labels: 180    # ~9.8%
+
+  aayl49:
+    n_variants: 4312
+    top2_k: 87
+    seed_size: 43        # floor(0.01 * 4312)
+    batch_size: 43
+    n_cycles: 9
+    total_labels: 430    # ~10.0%
+
+  aayl51:
+    n_variants: 4320
+    top2_k: 87
+    seed_size: 43        # floor(0.01 * 4320)
+    batch_size: 43
+    n_cycles: 9
+    total_labels: 430    # ~10.0%
+
+  aayl49_ml:
+    n_variants: 8953
+    top2_k: 180
+    seed_size: 90        # floor(0.01 * 8953)
+    batch_size: 90
+    n_cycles: 9
+    total_labels: 900    # ~10.1%
+
+  aayl50:
+    n_variants: 11473
+    top2_k: 230
+    seed_size: 115       # floor(0.01 * 11473)
+    batch_size: 115
+    n_cycles: 9
+    total_labels: 1150   # ~10.0%
+
+  aayl52:
+    n_variants: 13324
+    top2_k: 267
+    seed_size: 133       # floor(0.01 * 13324)
+    batch_size: 133
+    n_cycles: 9
+    total_labels: 1330   # ~10.0%
+
+  4fqi_h3:
+    n_variants: 65535
+    top2_k: 1311
+    seed_size: 655       # floor(0.01 * 65535)
+    batch_size: 655
+    n_cycles: 9
+    total_labels: 6550   # ~10.0%
+
+# 4fqi_h1 excluded: ~98% of variants near detection limit
+# (strongly bimodal distribution confounds Recall@2% comparisons)
+
+kernels:
+  - tanimoto   # primary — scale-invariant, non-stationary (Gessner et al. 2024)
+  - rq         # rational quadratic (scale mixture of RBF)
+  - matern     # Matern-5/2
+  - rbf        # radial basis function
+
+protocols:
+  - ucb        # Upper Confidence Bound, beta=1.0
+  - ei         # Expected Improvement, xi=0.01
+  - pi         # Probability of Improvement, xi=0.01
+  - random     # uniform random baseline
+
+seeds: [42, 123, 456]   # three independent random seeds; results reported as mean +- std
+
+hyperparameters:
+  pca_dim: 128
+  gp_epochs: 100
+  gp_lr: 0.1
+  gp_lr_decay: 0.95
+  ucb_beta: 1.0
+  ei_xi: 0.01
+  pi_xi: 0.01
